@@ -1,0 +1,63 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application.name: lottery
+  resources:
+    add-mappings: false
+  output.ansi.enabled: always # Show colored output
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      fail-on-empty-beans: false
+      fail-on-unwrapped-type-identifiers: false
+      indent-output: true
+    default-property-inclusion: non_null
+    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+    joda-date-time-format: yyyy-MM-dd'T'HH:mm:ss.SSSZ
+
+  datasource:
+    url: ${DATABASE_URI:jdbc:mysql://localhost:3306/lottery}
+    username: ${DATABASE_USERNAME:root}
+    password: ${DATABASE_PASSWORD:password}
+    tomcat:
+      initial-size: 3
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL55Dialect
+  data:
+    rest:
+      base-path: /api
+      return-body-on-create: true
+      return-body-on-update: true
+      max-page-size: 100
+      default-page-size: 50
+  servlet:
+    multipart:
+      max-file-size: ${MAX_UPLOAD_SIZE:100MB}
+      max-request-size: ${MAX_UPLOAD_SIZE:100MB}
+      enabled: true
+
+
+application.service:
+  end-game:
+    expiry-time: 0
+    cron:
+      enabled: true
+      schedule: "0 * * * * *" # Run every minute
+  open-game:
+    expiry-time: 0
+    cron:
+      enabled: true
+      schedule: "30 * * * * *" # Run every minute
+  scan-game:
+    expiry-time: 0
+    cron:
+      enabled: true
+      schedule: "50 * * * * *" # Run every minute
