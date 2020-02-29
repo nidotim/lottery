@@ -44,6 +44,19 @@ spring:
       max-request-size: ${MAX_UPLOAD_SIZE:100MB}
       enabled: true
 
+logging:
+  level:
+    com.nidotim.lottery: ${APP_LOG_LEVEL:DEBUG}
+    org.springframework.web.filter.CommonsRequestLoggingFilter: ${WEB_LOG_LEVEL:DEBUG}
+    org.springframework.transaction: ${TRANSACTION_LOG_LEVEL:DEBUG}
+
+
+request.logging:
+  includeQueryString: ${REQUEST_LOGGING_INCLUDE_QUERY_STRING:true}
+  includePayload: ${REQUEST_LOGGING_INCLUDE_PAYLOAD:false}
+  maxPayloadLength: ${REQUEST_LOGGING_MAX_PAYLOAD_LENGTH:10000}
+  includeHeaders: ${REQUEST_LOGGING_INCLUDE_HEADERS:false}
+  includeClientInfo: ${REQUEST_LOGGING_INCLUDE_CLIENT_INFO:true}
 
 application.service:
   end-game:

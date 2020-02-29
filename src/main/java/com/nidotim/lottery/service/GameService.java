@@ -10,8 +10,11 @@ import com.nidotim.lottery.repository.TicketRepository;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GameService {
 
   private final GameRepository gameRepository;
@@ -80,18 +84,24 @@ public class GameService {
     return game;
   }
 
-  @Transactional
-  public Game scan(Game game) {
-    game = gameRepository.findById(game.getId()).get();
-    game = gameScanService.startScanGame(game);
-    game = gameRepository.findById(game.getId()).get();
-    gameScanService.scanTickets(game);
+  public void scan(String id) {
+    PageRequest pageable = PageRequest.of(0, 500);
+    //Game game = gameRepository.findById(id).get();
+    gameScanService.startScanGame(id);
+    //game = gameRepository.findById(game.getId()).get();
+    Set<Integer> winningNumbers = gameScanService.getWinningNumbers(id);
+    int leastWinningNumber = gameScanService.getLeastWinningNumber(id);
+    Page<Ticket> ticketPage = gameScanService.findUnscannedTickets(id, pageable);
+    while (ticketPage.getTotalElements() > 0) {
+      log.debug("scan ... " + ticketPage.getTotalElements());
+      gameScanService.scanTickets(ticketPage.getContent(), winningNumbers, leastWinningNumber);
+      ticketPage = gameScanService.findUnscannedTickets(id, pageable);
+    }
 
-    game = gameRepository.findById(game.getId()).get();
-    //game = gameScanService.endScanGame(game);
-    game.setStatus(GameStatus.Closed);
-    return gameRepository.save(game);
-    //return game;
+    //game = gameRepository.findById(game.getId()).get();
+    gameScanService.endScanGame(id);
+    //game.setStatus(GameStatus.Closed);
+    //return gameRepository.save(game);
   }
 
   public void buyTicket(User user, String gameId, List<Integer> numberList) {

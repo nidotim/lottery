@@ -20,7 +20,7 @@ public class GameController {
   @PutMapping("/{id}/rescan")
   public ResponseEntity<?> rescanGame(@PathVariable("id") String id) {
     Game game = gameService.getOne(id);
-    gameService.scan(game);
+    gameService.scan(game.getId());
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
   }

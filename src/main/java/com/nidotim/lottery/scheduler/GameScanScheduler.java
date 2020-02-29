@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -32,7 +31,6 @@ public class GameScanScheduler extends BaseCleanUpScheduler<Game> {
    * Clean up expired questions
    */
   @Scheduled(cron = "${application.service.scan-game.cron.schedule}")
-  @Transactional
   @SchedulerLock(name = "GameScanScheduler", lockAtLeastForString = "PT10S", lockAtMostForString = "PT300S")
   @Override
   public void schedulerFired() {
@@ -61,9 +59,10 @@ public class GameScanScheduler extends BaseCleanUpScheduler<Game> {
   @Override
   void cleanUp(Game question) {
     try {
-      gameService.scan(question);
+      gameService.scan(question.getId());
     } catch (Exception e) {
       log.error("scan game failed. id: {}. {}", question.getId(), e.getMessage());
+      e.printStackTrace();
       //ignore
     }
   }
