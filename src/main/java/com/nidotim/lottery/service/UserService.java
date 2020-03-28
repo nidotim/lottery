@@ -1,12 +1,17 @@
 package com.nidotim.lottery.service;
 
+import com.nidotim.lottery.model.Game;
+import com.nidotim.lottery.model.Lottery;
 import com.nidotim.lottery.model.User;
 import com.nidotim.lottery.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -45,5 +50,17 @@ public class UserService {
 
     }
   }
+
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  @Async
+  public void buyTicketAutomatically(Lottery lottery) {
+    List<User> users = userRepository.findAll();
+    if (CollectionUtils.isEmpty(users)) {
+      return;
+    }
+    Game game = gameService.getCurrentGame(lottery);
+    buyTicket(users.get(0).getId(), game.getId(), 100000);
+  }
+
 
 }

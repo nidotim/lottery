@@ -35,6 +35,7 @@ public class GameScanService {
   public Game endScanGame(String id) {
     Game game = gameRepository.findById(id).get();
     game.setStatus(GameStatus.Closed);
+    game.setNumOfTickets(game.getTickets().size());
     return gameRepository.save(game);
   }
 

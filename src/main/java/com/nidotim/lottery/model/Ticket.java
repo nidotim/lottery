@@ -46,10 +46,13 @@ public class Ticket extends BaseEntity {
   @LazyCollection(LazyCollectionOption.EXTRA)
   @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   @JsonIgnore
+  @Builder.Default
   private List<Number> numberList = new ArrayList();
 
+  @Builder.Default
   private boolean scanned = false;
 
+  @Builder.Default
   private boolean win = false;
 
 }

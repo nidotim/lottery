@@ -3,6 +3,7 @@ package com.nidotim.lottery.scheduler;
 import com.nidotim.lottery.model.Game;
 import com.nidotim.lottery.model.enums.GameStatus;
 import com.nidotim.lottery.service.GameService;
+import com.nidotim.lottery.service.UserService;
 import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.core.SchedulerLock;
@@ -21,6 +22,9 @@ public class GameOpenScheduler extends BaseCleanUpScheduler<Game> {
 
   @Autowired
   private GameService gameService;
+
+  @Autowired
+  private UserService userService;
 
   public GameOpenScheduler(
       @Value("${application.service.open-game.cron.enabled}") boolean enabled,
@@ -59,11 +63,12 @@ public class GameOpenScheduler extends BaseCleanUpScheduler<Game> {
   }
 
   @Override
-  void cleanUp(Game question) {
+  void cleanUp(Game game) {
     try {
-      gameService.open(question);
+      gameService.open(game);
+      userService.buyTicketAutomatically(game.getLottery());
     } catch (Exception e) {
-      log.error("open game failed. id: {}. {}", question.getId(), e.getMessage());
+      log.error("open game failed. id: {}. {}", game.getId(), e.getMessage());
       //ignore
     }
   }

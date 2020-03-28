@@ -44,6 +44,7 @@ public class Lottery extends BaseEntity {
   @LazyCollection(LazyCollectionOption.EXTRA)
   @OneToMany(mappedBy = "lottery", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   @JsonIgnore
+  @Builder.Default
   private Set<Game> posts = new HashSet<>();
 
 }

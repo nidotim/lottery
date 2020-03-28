@@ -38,6 +38,7 @@ public class User extends BaseEntity {
   @LazyCollection(LazyCollectionOption.EXTRA)
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   @JsonIgnore
+  @Builder.Default
   private Set<Ticket> tickets = new HashSet<>();
 
 }

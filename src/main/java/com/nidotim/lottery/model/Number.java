@@ -31,12 +31,16 @@ public class Number extends BaseEntity {
   private Ticket ticket;
 
   @Convert(converter = ListToJsonConverter.class)
+  @Builder.Default
   private List<Integer> numbers = new ArrayList<>();
 
+  @Builder.Default
   private boolean scanned = false;
 
+  @Builder.Default
   private boolean win = false;
 
+  @Builder.Default
   private int matched = 0;
 
 }

@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -43,6 +44,8 @@ public class Game extends BaseEntity {
 
   private Instant endDate;
 
+  private Integer numOfTickets;
+
   @Enumerated(value = EnumType.STRING)
   private GameStatus status;
 
@@ -57,10 +60,12 @@ public class Game extends BaseEntity {
   @LazyCollection(LazyCollectionOption.EXTRA)
   @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   @JsonIgnore
+  @Builder.Default
   private List<Ticket> tickets = new ArrayList<>();
 
   @Convert(converter = SetToJsonConverter.class)
-  private Set<Integer> numbers = new HashSet<>();
+  @Builder.Default
+  private Set<Integer> numbers = new TreeSet<>();
 
   @JsonIgnore
   public boolean isEnded() {

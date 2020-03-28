@@ -126,7 +126,8 @@ public class GameService {
       }
       List<Ticket> tickets = game.buyTickets(user, numOfTickets);
       ticketRepository.saveAll(tickets);
+    } else {
+      log.error("game not found");
     }
   }
-
 }
