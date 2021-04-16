@@ -28,7 +28,7 @@ public class LotteryController {
   }
 
   @GetMapping
-  public ResponseEntity<?>  getLotteries() {
+  public ResponseEntity<?> getLotteries() {
     List<Lottery> lotteryList = lotteryService.findAllLotteries();
     return new ResponseEntity<>(lotteryList, HttpStatus.OK);
   }
@@ -36,9 +36,9 @@ public class LotteryController {
   @PostMapping("/{id}/start")
   public ResponseEntity<?> startGame(@PathVariable("id") String id) {
     Game game = lotteryService.startGame(id);
-    if(game == null) {
+    if (game == null) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    } else{
+    } else {
       return new ResponseEntity<>(game, HttpStatus.OK);
     }
   }
@@ -46,12 +46,17 @@ public class LotteryController {
   @GetMapping("/{id}/games/current")
   public ResponseEntity<?> getCurrentGame(@PathVariable("id") String id) {
     Game game = lotteryService.getCurrentGame(id);
-    if(game == null) {
+    if (game == null) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    } else{
+    } else {
       return new ResponseEntity<>(game, HttpStatus.OK);
     }
   }
 
+  @PostMapping("/{id}/parseHistory")
+  public ResponseEntity<?> parseHistory(@PathVariable("id") String id) {
+    lotteryService.parseHistory(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
 
 }

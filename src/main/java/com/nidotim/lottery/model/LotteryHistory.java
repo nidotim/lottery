@@ -1,11 +1,18 @@
 package com.nidotim.lottery.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nidotim.lottery.model.converter.ListToJsonConverter;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,27 +31,19 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Lottery extends BaseEntity {
+public class LotteryHistory extends BaseEntity {
 
-  @NotNull(message = "Name cannot be null")
-  private String name;
+  private Instant date;
 
-  private int minNum;
-
-  private int maxNum;
-
-  private int numOfNumbers;
-
-  private int numOfNumbersInTicket;
-
-  private int leastWinningNumber;
-
-  @Exclude
-  @ToString.Exclude
-  @LazyCollection(LazyCollectionOption.EXTRA)
-  @OneToMany(mappedBy = "lottery", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+  @NotNull
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "lottery_id", updatable = false)
   @JsonIgnore
+  private Lottery lottery;
+
+  @Convert(converter = ListToJsonConverter.class)
   @Builder.Default
-  private Set<Game> games = new HashSet<>();
+  private List<Integer> numbers = new ArrayList<>();
+
 
 }
